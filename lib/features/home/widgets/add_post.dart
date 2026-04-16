@@ -13,12 +13,14 @@ class PostDialog extends StatefulWidget {
 
 class _PostDialogState extends State<PostDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _bodyController = TextEditingController();
+  late TextEditingController _titleController;
+  late TextEditingController _bodyController;
 
   @override
   void initState() {
     super.initState();
+    _titleController = TextEditingController();
+    _bodyController = TextEditingController();
   }
 
   @override
@@ -31,31 +33,31 @@ class _PostDialogState extends State<PostDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      scrollable: true,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      title: Text("إضافة منشور جديد", textAlign: TextAlign.center),
-      content: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildTextField(
-                _titleController,
-                "* عنوان المنشور",
-                (value) => (value == null || value.trim().isEmpty)
-                    ? "يجب تعبئة عنوان المنشور"
-                    : null,
-              ),
-              const SizedBox(height: 15),
-              _buildTextField(
-                _bodyController,
-                "* نص المنشور",
-                (value) => (value == null || value.trim().isEmpty)
-                    ? "يجب تعبئة نص المنشور"
-                    : null,
-              ),
-            ],
-          ),
+      title: const Text("إضافة منشور جديد", textAlign: TextAlign.center),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildTextField(
+              _titleController,
+              "* عنوان المنشور",
+              (value) => (value == null || value.trim().isEmpty)
+                  ? "يجب تعبئة عنوان المنشور"
+                  : null,
+            ),
+            const SizedBox(height: 15),
+            _buildTextField(
+              _bodyController,
+              "* نص المنشور",
+              (value) => (value == null || value.trim().isEmpty)
+                  ? "يجب تعبئة نص المنشور"
+                  : null,
+              minLines: 5,
+            ),
+          ],
         ),
       ),
       actions: [
@@ -68,9 +70,9 @@ class _PostDialogState extends State<PostDialog> {
             backgroundColor: const Color(0xfffac638),
           ),
           onPressed: () => _submitData(context),
-          child: Text(
+          child: const Text(
             "إضافة منشور",
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.white),
           ),
         ),
       ],
@@ -81,12 +83,16 @@ class _PostDialogState extends State<PostDialog> {
     TextEditingController controller,
     String label,
     String? Function(String?)? validator, {
-    bool isNumber = false,
+    int? minLines,
   }) {
     return TextFormField(
       controller: controller,
+      maxLines: null,
+      minLines: minLines ?? 1,
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: const TextStyle(color: Colors.grey),
+
         border: const OutlineInputBorder(),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
@@ -96,13 +102,8 @@ class _PostDialogState extends State<PostDialog> {
           borderRadius: BorderRadius.circular(15),
           borderSide: const BorderSide(color: Colors.black, width: 1.5),
         ),
+        alignLabelWithHint: true,
       ),
-      keyboardType: isNumber
-          ? const TextInputType.numberWithOptions(decimal: true)
-          : null,
-      inputFormatters: isNumber
-          ? [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))]
-          : null,
       validator: validator,
     );
   }

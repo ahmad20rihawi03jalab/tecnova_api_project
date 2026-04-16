@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trcnova_api_project/features/home/widgets/add_post.dart';
 import 'bloc/posts_cupit/post_cupit.dart';
 import 'bloc/posts_cupit/post_state.dart';
+import 'widgets/delete_post.dart';
 import 'widgets/post_cart.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,28 +15,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   void _showDeleteConfirmation(BuildContext context, int postId) {
+    final postsCubit = context.read<PostsCubit>();
+
     showDialog(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text("تأكيد الحذف"),
-          content: const Text("هل أنت متأكد من أنك تريد حذف هذا المنشور؟"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: const Text("إلغاء", style: TextStyle(color: Colors.black)),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 193, 21, 8),
-              ),
-              onPressed: () {
-                context.read<PostsCubit>().deletePost(postId);
-                Navigator.pop(dialogContext);
-              },
-              child: const Text("حذف", style: TextStyle(color: Colors.white)),
-            ),
-          ],
+        return BlocProvider.value(
+          value: postsCubit,
+          child: DeleteConfirmDialog(postId: postId),
         );
       },
     );
