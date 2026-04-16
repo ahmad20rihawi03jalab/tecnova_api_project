@@ -6,12 +6,12 @@ class PostModel {
 
   PostModel({this.userId, this.id, required this.title, required this.body});
 
-  factory PostModel.fromJson(jsonData) {
+  factory PostModel.fromJson(Map<String, dynamic> jsonData) {
     return PostModel(
       userId: jsonData["userId"],
       id: jsonData["id"],
-      title: jsonData["title"],
-      body: jsonData["body"],
+      title: jsonData["title"] ?? "",
+      body: jsonData["body"] ?? "",
     );
   }
 

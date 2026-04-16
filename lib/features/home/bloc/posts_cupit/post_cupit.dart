@@ -18,7 +18,7 @@ class PostsCubit extends Cubit<PostState> {
           .toList();
       emit(PostsGetSuccess(posts: posts));
     } catch (e) {
-      emit(PostError("${e.toString()}"));
+      emit(PostError("$e.toString()"));
     }
   }
 
@@ -39,7 +39,7 @@ class PostsCubit extends Cubit<PostState> {
       emit(PostDeleteSuccess());
       await getPosts();
     } catch (e) {
-      emit(PostError("فشل في حذف العنصر: ${e}"));
+      emit(PostError("فشل في حذف العنصر: $e"));
     }
   }
 }
